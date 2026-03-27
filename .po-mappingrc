@@ -1,0 +1,10 @@
+{
+    "authPrefix": "oidc",
+    "roles": [{
+        "prefix": "read_",
+        "role": "read"
+    }, {
+        "prefix": "write_",
+        "role": "readWrite"
+    }]
+}
