@@ -8,6 +8,10 @@ import chalk from 'chalk';
 // - po-mapping.config.js (ESM or CommonJS)
 const explorer = cosmiconfig('po-mapping');
 
+/**
+ * Load the configuration for the project.
+ * @returns {Promise<object>} The configuration object
+ */
 async function loadConfig() {
     try {
         const result = await explorer.search();
@@ -35,21 +39,31 @@ async function loadConfig() {
     }
 }
 
-function projectNameToOIDCGroup(projectName) {
-    const config = loadConfig();
+/**
+ * 
+ * @param {string} projectName Ops Manager project name
+ * @returns {Promise<Array<{role: string, db: string, groupName: string}>>} OIDC groups
+ */
+async function projectNameToOIDCGroup(projectName) {
+    const config = await loadConfig();
     const roles = config.roles || [];
     const groups = [];
 
+    console.log(`Mapping project name "${chalk.green(projectName)}" to OIDC groups...`);
     for (const { prefix, role, db } of roles) {
         const pNameConverted = projectName.toLowerCase().replace(/\s+/g, '_');
-        groups.push(`${prefix}${pNameConverted}`);
+        const groupName = `${prefix}${pNameConverted}`;
+        groups.push({
+            role: role,
+            db: db,
+            groupName: groupName,
+        });
+        console.log(`Mapped OIDC group ${chalk.green(groupName)} with role ${chalk.green(role)} on db ${chalk.green(db)}`);
     }
-    // TODO: create roles in Ops Manager if they don't exist, using the specified role and db from config
-    console.log(`Mapped project name "${projectName}" to OIDC groups: ${chalk.green(groups.join(', '))}`);
     return groups;
 }
 
-module.exports = {
-  projectNameToOIDCGroup,
-  loadConfig,
+export {
+    projectNameToOIDCGroup,
+    loadConfig,
 };

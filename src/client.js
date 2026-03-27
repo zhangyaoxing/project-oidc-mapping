@@ -140,6 +140,16 @@ class OpsManagerClient {
     let response = await digestRequest(url);
     return response.data.results;
   }
+  async getAutomationConfig(projectId) {
+    const url = `${this.basePath}/groups/${projectId}/automationConfig`;
+    let response = await digestRequest(url);
+    return response.data;
+  }
+  async putAutomationConfig(projectId, config) {
+    const url = `${this.basePath}/groups/${projectId}/automationConfig`;
+    let response = await digestRequest(url, 'PUT', config);
+    return response.data;
+  }
 }
 
 export {

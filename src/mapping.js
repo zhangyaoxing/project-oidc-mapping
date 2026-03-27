@@ -1,4 +1,5 @@
 import { OpsManagerClient } from './client.js';
+import { projectNameToOIDCGroup } from './utils.js';
 import chalk from 'chalk';
 
 async function getAllProjects(baseUrl) {
@@ -17,9 +18,11 @@ async function getAllProjects(baseUrl) {
 
 async function mapOIDC4Projects(baseUrl) {
     const projects = await getAllProjects(baseUrl);
-    return projects.map(p => {
-        console.log(chalk.blue(`Mapping OIDC groups for project ${p.projectName} (ID: ${p.projectId}) in org (ID: ${p.orgId})...`));
-    });
+    for (const p of projects) {
+        console.log(`Mapping OIDC groups for project ${chalk.green(p.projectName)} (ID: ${chalk.green(p.projectId)}) in org (ID: ${chalk.green(p.orgId)})...`);
+        const oidcGroups = await projectNameToOIDCGroup(p.projectName);
+        let automationConfig = await client.getAutomationConfig(p.projectId);
+    }
 }
 
 export {
