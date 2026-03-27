@@ -1,13 +1,12 @@
 # project-oidc-mapping
-
-A command-line REST API client that authenticates using **HTTP Digest Authentication**.  
-It accepts a target URL as a CLI argument and reads credentials from environment variables.
-
----
+A command line tool that helps you map 2 OIDC roles for each Ops Manager project:
+- `<authPrefix>/read_<app>_<env>`->`read@bv<dbname>adm`
+- `<authPrefix>/write_<app>_<env>`->`readWrite@bv<dbname>adm`
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) v18 or later
+- [Node.js](https://nodejs.org/) 24.14.1 (Defined in `.nvmrc`)
+- Ops Manager Global API key, with `Global Automation Admin` role.
 
 ## Setup
 
@@ -18,69 +17,40 @@ It accepts a target URL as a CLI argument and reads credentials from environment
    ```
 
 2. **Configure credentials**
+    1. For devlopment, copy `.env.example` to `.env` and fill in your keys:
 
-   Copy `.env.example` to `.env` and fill in your keys:
+      ```bash
+      cp .env.example .env
+      ```
 
-   ```bash
-   cp .env.example .env
-   ```
+      | Variable      | Description                                    |
+      |---------------|------------------------------------------------|
+      | `PUBLIC_KEY`  | Your API public key (Digest auth username)     |
+      | `PRIVATE_KEY` | Your API private key (Digest auth password)    |
 
-   | Variable      | Description                                    |
-   |---------------|------------------------------------------------|
-   | `PUBLIC_KEY`  | Your API public key (Digest auth username)     |
-   | `PRIVATE_KEY` | Your API private key (Digest auth password)    |
-
-   > **Note:** `.env` is listed in `.gitignore` and will never be committed.
-
----
+      > **Note:** `.env` is listed in `.gitignore` and will never be committed.
+   2. For production, export environment variables before running the script:
+      ```bash
+      export PUBLIC_KEY=<public key>
+      export PRIVATE_KEY=<private key>
+      ```
 
 ## Usage
 
 ```
-node src/cli.js <url> [method] [body]
+npm start <url>
 ```
 
 | Argument | Description                                              |
 |----------|----------------------------------------------------------|
-| `url`    | The full URL to request (**required**)                   |
-| `method` | HTTP method: `GET`, `POST`, `PUT`, `PATCH`, `DELETE` (default: `GET`) |
-| `body`   | JSON string body for `POST`/`PUT`/`PATCH` requests       |
+| `url`    | The full URL of Ops Manager (**required**)                   |
 
 ### Examples
 
 **GET request**
 
 ```bash
-PUBLIC_KEY=myPublicKey PRIVATE_KEY=myPrivateKey \
-  node src/cli.js https://example.com/api/resource
+export PUBLIC_KEY=myPublicKey
+export PRIVATE_KEY=myPrivateKey \
+npm start https://example.com/
 ```
-
-**POST request with a JSON body**
-
-```bash
-PUBLIC_KEY=myPublicKey PRIVATE_KEY=myPrivateKey \
-  node src/cli.js https://example.com/api/resource POST '{"key":"value"}'
-```
-
-**Using a `.env` file (with [dotenv CLI](https://github.com/motdotla/dotenv))**
-
-```bash
-npx dotenv -e .env -- node src/cli.js https://example.com/api/resource
-```
-
-**Show help**
-
-```bash
-node src/cli.js --help
-```
-
----
-
-## How it works
-
-1. An initial unauthenticated request is sent to the server.
-2. The server responds with `401 Unauthorized` and a `WWW-Authenticate: Digest ...` header.
-3. The client computes the digest response using `PUBLIC_KEY` (username), `PRIVATE_KEY` (password), and the server-supplied challenge fields (`realm`, `nonce`, `qop`, etc.).
-4. A second request is sent with the computed `Authorization` header.
-
-The digest computation supports both `MD5` and `SHA-256` algorithms and both `qop=auth` and no-qop challenge modes.
