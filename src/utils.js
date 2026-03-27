@@ -22,14 +22,13 @@ async function loadConfig() {
         } else {
             console.log(chalk.yellow('No configuration file found, using default configuration.'));
             return {
+                authPrefix: 'okta',
                 roles: [{
                     prefix: "read_",
-                    role: "readAnyDatabase",
-                    db: "admin",
+                    role: "read",
                 }, {
                     prefix: "write_",
-                    role: "readWriteAnyDatabase",
-                    db: "admin",
+                    role: "readWrite",
                 }]
             };
         }
@@ -39,31 +38,6 @@ async function loadConfig() {
     }
 }
 
-/**
- * 
- * @param {string} projectName Ops Manager project name
- * @returns {Promise<Array<{role: string, db: string, groupName: string}>>} OIDC groups
- */
-async function projectNameToOIDCGroup(projectName) {
-    const config = await loadConfig();
-    const roles = config.roles || [];
-    const groups = [];
-
-    console.log(`Mapping project name "${chalk.green(projectName)}" to OIDC groups...`);
-    for (const { prefix, role, db } of roles) {
-        const pNameConverted = projectName.toLowerCase().replace(/\s+/g, '_');
-        const groupName = `${prefix}${pNameConverted}`;
-        groups.push({
-            role: role,
-            db: db,
-            groupName: groupName,
-        });
-        console.log(`Mapped OIDC group ${chalk.green(groupName)} with role ${chalk.green(role)} on db ${chalk.green(db)}`);
-    }
-    return groups;
-}
-
 export {
-    projectNameToOIDCGroup,
     loadConfig,
 };

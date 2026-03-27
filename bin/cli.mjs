@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+import { OpsManagerClient } from '../src/client.js';
 import { mapOIDC4Projects } from '../src/mapping.js';
 import meow from 'meow';
 import chalk from 'chalk';
@@ -44,7 +45,7 @@ async function main() {
 	${chalk.bold('Usage')}
 	  $ po-mapping <ops manager url>
 	${chalk.bold('Examples')}
-	  $ po-mapping https://localhost:8080/
+	  $ po-mapping http://localhost:8080/
 `, {
         importMeta: import.meta,
     });
@@ -106,7 +107,8 @@ async function main() {
     process.env.PUBLIC_KEY = publicKey;
     process.env.PRIVATE_KEY = privateKey;
 
-    await mapOIDC4Projects(baseUrl);
+    const client = new OpsManagerClient(baseUrl);
+    await mapOIDC4Projects(client);
 }
 
 main().catch(err => {
