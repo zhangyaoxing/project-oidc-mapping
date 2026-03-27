@@ -37,7 +37,7 @@ It accepts a target URL as a CLI argument and reads credentials from environment
 ## Usage
 
 ```
-node src/client.js <url> [method] [body]
+node src/cli.js <url> [method] [body]
 ```
 
 | Argument | Description                                              |
@@ -52,26 +52,26 @@ node src/client.js <url> [method] [body]
 
 ```bash
 PUBLIC_KEY=myPublicKey PRIVATE_KEY=myPrivateKey \
-  node src/client.js https://example.com/api/resource
+  node src/cli.js https://example.com/api/resource
 ```
 
 **POST request with a JSON body**
 
 ```bash
 PUBLIC_KEY=myPublicKey PRIVATE_KEY=myPrivateKey \
-  node src/client.js https://example.com/api/resource POST '{"key":"value"}'
+  node src/cli.js https://example.com/api/resource POST '{"key":"value"}'
 ```
 
 **Using a `.env` file (with [dotenv CLI](https://github.com/motdotla/dotenv))**
 
 ```bash
-npx dotenv -e .env -- node src/client.js https://example.com/api/resource
+npx dotenv -e .env -- node src/cli.js https://example.com/api/resource
 ```
 
 **Show help**
 
 ```bash
-node src/client.js --help
+node src/cli.js --help
 ```
 
 ---

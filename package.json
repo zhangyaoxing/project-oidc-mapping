@@ -1,13 +1,13 @@
 {
   "name": "project-oidc-mapping",
   "version": "1.0.0",
-  "description": "Map OIDC groups for each Ops Manager group.",
+  "description": "Map OIDC groups for each Ops Manager project.",
   "main": "src/client.js",
   "bin": {
-    "rest-client": "src/client.js"
+    "po-mapping": "src/cli.js"
   },
   "scripts": {
-    "start": "node src/client.js",
+    "start": "node src/cli.js",
     "test": "node --test src/client.test.js"
   },
   "repository": {
