@@ -2,12 +2,12 @@
   "name": "project-oidc-mapping",
   "version": "1.0.0",
   "description": "Map OIDC groups for each Ops Manager project.",
-  "main": "src/client.js",
+  "main": "bin/cli.mjs",
   "bin": {
-    "po-mapping": "src/cli.js"
+    "po-mapping": "bin/cli.mjs"
   },
   "scripts": {
-    "start": "node src/cli.js",
+    "start": "node bin/cli.mjs",
     "test": "node --test src/client.test.js"
   },
   "repository": {
@@ -16,13 +16,15 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "license": "MIT",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/zhangyaoxing/project-oidc-mapping/issues"
   },
   "homepage": "https://github.com/zhangyaoxing/project-oidc-mapping#readme",
   "dependencies": {
-    "axios": "^1.13.6"
+    "axios": "^1.13.6",
+    "chalk": "^5.6.2",
+    "meow": "^14.1.0"
   }
 }

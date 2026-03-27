@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
-const axios = require('axios');
-const crypto = require('crypto');
+import axios from 'axios';
+import crypto from 'crypto';
 
 /**
  * Parse a WWW-Authenticate: Digest header value into a field map.
@@ -126,8 +126,25 @@ async function digestRequest(url, method = 'GET', data = undefined) {
   return response;
 }
 
-module.exports = {
+class OpsManagerClient {
+  constructor(baseUrl) {
+    this.basePath = `${baseUrl.replace(/\/$/, '')}/api/public/v1.0`;
+  }
+  async getOrgs() {
+    const url = `${this.basePath}/orgs`;
+    let response = await digestRequest(url);
+    return response.data.results;
+  }
+  async getProjects(orgId) {
+    const url = `${this.basePath}/groups`;
+    let response = await digestRequest(url);
+    return response.data.results;
+  }
+}
+
+export {
   parseDigestChallenge,
   buildDigestAuth,
   digestRequest,
+  OpsManagerClient,
 };
